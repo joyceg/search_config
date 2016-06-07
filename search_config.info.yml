@@ -1,5 +1,5 @@
 name: Search Configuration
-description: Modify search form, including enforcing search restrictions by content type.
+description: 'Modify search form, including enforcing search restrictions by content type.'
 package: Search
 core: 8.x
 dependencies:
