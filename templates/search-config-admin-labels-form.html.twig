@@ -1,6 +1,6 @@
 {% set labels = form['#field-labels'] %}
-{% set form_key = form_name %}s
-{% for form_key, form_name in ["'Basic'|t", "'Advanced'|t"]  %}
+{% set form_key = form_name %}
+{% for form_key, form_name in ['basic':'Basic'|t, 'advanced':'Advanced'|t]  %}
     <table>
         <tr>
             <th colspan="2">
@@ -11,11 +11,13 @@
             {% set has_title_display =  {% if form.title-dispaly.key is not null %}{% endif %} %}
             <tr>
                 <td style= "vertical-align: top;">
-                    <label for = \" {{ form.'labels'.key['#id'] }}"\>{{ lables.key[0] }} </label>
+                    <label for = " {{ form.labels.key['#id'] }} " >
+                    {{ lables.key[0] }}
+                     </label>
                     <em>{{ labels.key[1] }}</em>
                 </td>
-                <td style="vertical-align: top" {{ has_title_display ? '' : ' colspan="2"' }} >{{ drupal_render(form.'labels'.key) }}</td>
-                {% if has_title_display %}<td>{{ drupal_render(form.'title_display'.key) }}</td>{% endif %}
+                <td style="vertical-align: top" {{ has_title_display ? '' : ' colspan="2"' }} > {{ form.labels.key }}</td>
+                {% if has_title_display %}<td>{{ form.title_display.key }}</td>{% endif %}
             </tr>
         {% endfor %}
     </table>
