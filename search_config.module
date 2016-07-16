@@ -121,7 +121,7 @@ function search_config_theme()  {
   return array(
     'search_config_admin_label_form' => array(
       'render element' => 'form',
-      'template' => 'templates/search-config-admin-labels-form.html.twig',
+      'template' => 'search-config-admin-labels-form.html.twig',
       ),
     );
 }
