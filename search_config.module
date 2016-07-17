@@ -14,14 +14,13 @@ function search_config_get_roles_by_permission($permission) {
  * Helper function to get the settings.
  */
 function search_config_node_settings() {
-  $settings = \Drupal::config('search_config.settings')->get('settings');
+  $settings = \Drupal::config('search_config.settings')->get();
   $settings += array(
     'forms' => array(),
     'fields' => array(),
     'restrictions' => array(),
     'results' => array(),
   );
-
   $settings['forms'] += array(
     'toggle_forms' => 0,            // Show adv if both forms are present
     'move_keyword_search' => 0,     // Move keyword search into adv form
@@ -80,7 +79,7 @@ function search_config_content_types()  {
  * Helper function to get the settings
  */
 function search_config_string_overrides($key = NULL) {
-  $overrides = \Drupal::config('search_config.stringoverrides')->get('search_config_string_overrides');
+  $overrides = \Drupal::config('search_config.stringoverrides')->get();
   $overrides += array(
     'labels' => array(
       'basic' => '',

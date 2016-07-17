@@ -6,6 +6,7 @@
  */
 use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Url;
+use  \Drupal\Component\Utility\Html;
 function _search_config_form_search_admin_settings_alter($form, $form_state) {
     $string_overrides = search_config_string_overrides();
     $form['search_config_string_overrides'] = array(
@@ -19,22 +20,22 @@ function _search_config_form_search_admin_settings_alter($form, $form_state) {
         '#tree' => TRUE,
     );
     $title_display_options = array(
-        'default' => t('Default'),
-        'invisible' => t('Hidden'),
-        'description' => t('Below'),
+        'default' => $this->t('Default'),
+        'invisible' => $this->t('Hidden'),
+        'description' => $this->t('Below'),
     );
     $slabels = array(
-        'basic' => array(t('Keywords'), t('Enter your keywords')),
-        'basic_with_keys' => array(t('Keywords (with search keys)'), t('Enter your keywords')),
-        'basic_submit' => array(t('Submit button'), t('Search')),
-        'advanced_fieldset' => array(t('Wrapping fieldset'), t('Advanced search')),
-        'advanced_fieldset_with_keys' => array(t('Wrapping fieldset (with search keys)'), t('Advanced search')),
-        'advanced_any' => array(t('Containing any ...'), t('Containing any of the words')),
-        'advanced_phrase' => array(t('Containing the phrase'), t('Containing the phrase')),
-        'advanced_none' => array(t('Containing none ...'), t('Containing none of the words')),
-        'advanced_type' => array(t('Types'), t('Only of the type(s)')),
-        'advanced_language' => array(t('Language selector'), t('Languages')),
-        'advanced_submit' => array(t('Submit button'), t('Advanced search')),
+        'basic' => array($this->t('Keywords'), t('Enter your keywords')),
+        'basic_with_keys' => array($this->t('Keywords (with search keys)'), $this->t('Enter your keywords')),
+        'basic_submit' => array($this->t('Submit button'), $this->t('Search')),
+        'advanced_fieldset' => array($this->t('Wrapping fieldset'), $this->t('Advanced search')),
+        'advanced_fieldset_with_keys' => array($this->t('Wrapping fieldset (with search keys)'), $this->t('Advanced search')),
+        'advanced_any' => array($this->t('Containing any ...'), $this->t('Containing any of the words')),
+        'advanced_phrase' => array($this->t('Containing the phrase'), $this->t('Containing the phrase')),
+        'advanced_none' => array($this->t('Containing none ...'), $this->t('Containing none of the words')),
+        'advanced_type' => array($this->t('Types'), $this->t('Only of the type(s)')),
+        'advanced_language' => array($this->t('Language selector'), $this->t('Languages')),
+        'advanced_submit' => array($this->t('Submit button'), $this->t('Advanced search')),
     );
     $form['search_config_string_overrides']['#field-labels'] = $slabels;
     foreach ($slabels as $skey => $slabel) {
@@ -44,7 +45,7 @@ function _search_config_form_search_admin_settings_alter($form, $form_state) {
                 '#title' => $slabel[0],
                 '#title_display' => 'invisible',
                 '#default_value' => $string_overrides['labels'][$skey],
-                '#description' => t('t() string: !translation' ,
+                '#description' => $this->t('t() string: !translation' ,
                     array('%label' => $slabel[1], '!translation' => '!search_config:' . $skey)),
                 '#size' => 40,
             ),
@@ -66,54 +67,54 @@ function _search_config_form_search_admin_settings_alter($form, $form_state) {
     $form['content_node_search_config'] = array(
         '#type' => 'fieldset',
         '#tree' => TRUE,
-        '#title' => t('Additional Node Search Configuration'),
+        '#title' => $this->t('Additional Node Search Configuration'),
         '#collapsed' => \Drupal::config('search_config.node')->get('search_config'),
         '#collapsible' => TRUE,
         'info' => array(
-            '#markup' => t('<p>The basic search form is the keyword and search button that is shown to all users. The additional fields are all part of the advanced search form that is only shown to users that have the "%advsearch" permission. <em>This module does not override these permissions!</em></p>',
-                ['%usesearch' => t('Use search'), '%advsearch' => t('Use advanced search')]),
+            '#markup' => $this->t('<p>The basic search form is the keyword and search button that is shown to all users. The additional fields are all part of the advanced search form that is only shown to users that have the "%advsearch" permission. <em>This module does not override these permissions!</em></p>',
+                ['%usesearch' => $this->t('Use search'), '%advsearch' => t('Use advanced search')]),
         ),
         'forms' => array(
             '#type' => 'item',
-            '#title' => t('Form control'),
+            '#title' => $this->t('Form control'),
             'toggle_forms' => array(
                 '#type' => 'checkbox',
-                '#title' => t('Only show one form at a time'),
-                '#description' => t('This will hide the basic search form if the advanced search form is present.'),
+                '#title' => $this->t('Only show one form at a time'),
+                '#description' => $this->t('This will hide the basic search form if the advanced search form is present.'),
                 '#default_value' => $settings['forms']['toggle_forms'],
             ),
             'move_keyword_search' => array(
                 '#type' => 'checkbox',
-                '#title' => t('Move basic keyword search'),
-                '#description' => t('This will move the keyword search field, (%label), into the advanced form and hide the rest of the basic form.'),
+                '#title' => $this->t('Move basic keyword search'),
+                '#description' => $this->t('This will move the keyword search field, (%label), into the advanced form and hide the rest of the basic form.'),
                 '#default_value' => $settings['forms']['move_keyword_search'],
             ),
             'advanced_populate' => array(
                 '#type' => 'checkbox',
-                '#title' => t('Populate the advanced form with default values'),
-                '#description' => t('By default the advanced form is always empty after a submission. This option will pull the values from the basic search form and use these to populate the advanced search form fields. <span style="color: #ff0000; font-style: italic;">Experimental</span>'),
+                '#title' => $this->t('Populate the advanced form with default values'),
+                '#description' => $this->t('By default the advanced form is always empty after a submission. This option will pull the values from the basic search form and use these to populate the advanced search form fields. <span style="color: #ff0000; font-style: italic;">Experimental</span>'),
                 '#default_value' => $settings['forms']['advanced_populate'],
             ),
             'remove_containing_wrapper' => array(
                 '#type' => 'radios',
-                '#title' => t('Remove all <em>Containing ...</em> keyword options'),
+                '#title' => $this->t('Remove all <em>Containing ...</em> keyword options'),
                 '#default_value' => $settings['forms']['remove_containing_wrapper'],
                 '#options' => array(
-                    'default' => t('No change'),
-                    'remove' => t('Remove unconditionally'),
-                    'empty' => t('Remove wrapper if no containing fields'),
+                    'default' => $this->t('No change'),
+                    'remove' => $this->t('Remove unconditionally'),
+                    'empty' => $this->t('Remove wrapper if no containing fields'),
                 ),
             ),
             'advanced_expand' => array(
                 '#type' => 'radios',
-                '#title' => t('Control how the advanced form initially renders'),
+                '#title' => $this->t('Control how the advanced form initially renders'),
                 '#default_value' => $settings['forms']['advanced_expand'],
                 '#options' => array(
-                    'default' => t('Always collapsed (no modification)'),
-                    'remove' => t('Remove the collapsible wrapper and title'),
-                    'expand_always' => t('Force it to stay open, but keep the open look and feel'),
-                    'expand_on_first' => t('Expand initially, then collapsed'),
-                    'expand_if_empty' => t('Expand initially or when there are zero results'),
+                    'default' => $this->t('Always collapsed (no modification)'),
+                    'remove' => $this->t('Remove the collapsible wrapper and title'),
+                    'expand_always' => $this->t('Force it to stay open, but keep the open look and feel'),
+                    'expand_on_first' => $this->t('Expand initially, then collapsed'),
+                    'expand_if_empty' => $this->t('Expand initially or when there are zero results'),
                 )
             ),
         ),
@@ -122,27 +123,27 @@ function _search_config_form_search_admin_settings_alter($form, $form_state) {
         ],
     );
     $fields = array(
-        'containing_any' => t('Containing any of the words'),
-        'containing_phrase' => t('Containing the phrase'),
-        'containing_none' => t('Containing none of the words'),
-        'types' => t('Only of the type(s)'),
-        'category' => t('By category'), // @todo: Find correct field naming
-        'language' => t('Languages'),
+        'containing_any' => $this->t('Containing any of the words'),
+        'containing_phrase' => $this->t('Containing the phrase'),
+        'containing_none' => $this->t('Containing none of the words'),
+        'types' => $this->t('Only of the type(s)'),
+        'category' => $this->t('By category'), // @todo: Find correct field naming
+        'language' => $this->t('Languages'),
     );
   foreach ($fields as $key => $label) {
       $form['content_node_search_config']['fields'][$key] = array(
           '#type' => 'fieldset',
-          '#title' => t('%field settings', array('%field' => $label)),
+          '#title' => $this->t('%field settings', array('%field' => $label)),
           '#collapsible' => TRUE,
           '#collapsed' => TRUE,
           'remove' => array(
               '#type' => 'checkbox',
-              '#title' => t('Hide this field', array('%field' => $label)),
+              '#title' => $this->t('Hide this field', array('%field' => $label)),
               '#default_value' => $settings['fields'][$key]['remove'],
           ),
           'roles' => array(
               '#type' => 'checkboxes',
-              '#title' => t('Override the above option by selecting one or more roles that should see this field:'),
+              '#title' => $this->t('Override the above option by selecting one or more roles that should see this field:'),
               '#options' => $role_options,
               '#default_value' => $settings['fields'][$key]['roles'],
           ),
@@ -157,30 +158,30 @@ function _search_config_form_search_admin_settings_alter($form, $form_state) {
           }
           $groupings_type_help_items = array();
           foreach (search_config_content_types() as $gtype => $glabel) {
-              $groupings_type_help_items[] = t('!type|%label', array('!type' => $gtype, '%label' => $glabel));
+              $groupings_type_help_items[] = $this->t('!type|%label', array('!type' => $gtype, '%label' => $glabel));
           }
-          $groupings_type_help_items[] = t('&lt;other-types&gt;|Search for all other content types not used already in a grouping that is allowed by the type filter.');
-          $groupings_type_help_items[] = t('&lt;all-types&gt;|Search for every content types allowed by the type filter.');
+          $groupings_type_help_items[] = $this->t('&lt;other-types&gt;|Search for all other content types not used already in a grouping that is allowed by the type filter.');
+          $groupings_type_help_items[] = $this->t('&lt;all-types&gt;|Search for every content types allowed by the type filter.');
 
-          $groupings_type_help = t('<p>Enter one grouping per line, in the format "%format". The key, %key, is a comma separated list of node content types. The %label is used in the search form display. There are two special key values, &lt;other-types&gt; and &lt;all-types&gt;, described below. A full list of value options are:</p>',
-              array('%format' => t('machine name(s)') . '|' . t('label'), "%key" => t('machine name(s)'), '%label' => t('label')));
+          $groupings_type_help = $this->t('<p>Enter one grouping per line, in the format "%format". The key, %key, is a comma separated list of node content types. The %label is used in the search form display. There are two special key values, &lt;other-types&gt; and &lt;all-types&gt;, described below. A full list of value options are:</p>',
+              array('%format' => $this->t('machine name(s)') . '|' . t('label'), "%key" => t('machine name(s)'), '%label' => t('label')));
           $item_list = array(
               '#type' => 'item_list',
               '#items' => $groupings_type_help_items,
           );
           $groupings_type_help .= \Drupal::service('renderer')->render($item_list);
-          $groupings_type_help .= t('<p>Leave empty to use the standard type options.</p>');
+          $groupings_type_help .= $this->t('<p>Leave empty to use the standard type options.</p>');
       $form['content_node_search_config']['fields'][$key] += array(
           'filter' => array(
               '#type' => 'checkboxes',
-              '#title' => t('Hide the following content types from the %field filter:', array('%field' => $label)),
-              '#description' => t(array('!url' => Url::fromRoute('user.admin_permissions')), '<strong>This only limits the filter options</strong>. You must set the <a href="!url">permissions here</a> to enforce search restrictions per content types. These premissions are also used to filter the options shown to the user.'
+              '#title' => $this->t('Hide the following content types from the %field filter:', array('%field' => $label)),
+              '#description' => $this->t(array('!url' => Url::fromRoute('user.admin_permissions')), '<strong>This only limits the filter options</strong>. You must set the <a href="!url">permissions here</a> to enforce search restrictions per content types. These premissions are also used to filter the options shown to the user.'
                   ),
               '#options' => search_config_content_types(),
               '#default_value' => $settings['fields'][$key]['filter'],
           ),
           'groupings' => array(
-              '#title' => t('Replace type options with custom type groups'),
+              '#title' => $this->t('Replace type options with custom type groups'),
               '#type' => 'textarea',
               '#rows' => 5,
               '#default_value' => implode("\n", $groupings),
@@ -196,15 +197,15 @@ function _search_config_form_search_admin_settings_alter($form, $form_state) {
   // Restrictions and a summary of search config permissions
   $form['content_node_search_config']['results'] = array(
       '#type' => 'fieldset',
-      '#title' => t('Results'),
+      '#title' => $this->t('Results'),
       '#collapsible' => TRUE,
       '#collapsed' => TRUE,
       'limit' => array(
           '#type' => 'select',
-          '#title' => t('Pager limit'),
-          '#description' => t('This option alters the number of results per page on the search results page.'),
+          '#title' => $this->t('Pager limit'),
+          '#description' => $this->t('This option alters the number of results per page on the search results page.'),
           '#default_value' => $settings['results']['limit'],
-          '#options' => array(0 => t('Do not alter')) + array_combine(array_merge(range(1, 25, 1), range(30, 100, 5), range(150, 1000, 25)), array_merge(range(1, 25, 1), range(30, 100, 5), range(150, 1000, 25))),
+          '#options' => array(0 => $this->t('Do not alter')) + array_combine(array_merge(range(1, 25, 1), range(30, 100, 5), range(150, 1000, 25)), array_merge(range(1, 25, 1), range(30, 100, 5), range(150, 1000, 25))),
       ),
   );
     $permissions = array();
@@ -241,7 +242,7 @@ function _search_config_form_search_admin_settings_alter($form, $form_state) {
           }
 
           if (isset($permission[AccountInterface::AUTHENTICATED_ROLE]) && isset($permission[AccountInterface::ANONYMOUS_ROLE])) {
-              $items[] = t('!permission<br /><strong><em>Everyone</em></strong>', $t_args);
+              $items[] = $this->t('!permission<br /><strong><em>Everyone</em></strong>', $t_args);
           }
           else {
               // Remove the note flag on these.
@@ -249,42 +250,42 @@ function _search_config_form_search_admin_settings_alter($form, $form_state) {
                   $permission = array_intersect_key($roles, $permission);
               }
               $t_args['!roles'] = implode(', ', $permission);
-              $items[] = t('!permission<br />!roles', $t_args);
+              $items[] = $this->t('!permission<br />!roles', $t_args);
           }
       }
       else {
-          $items[] = t('!permission<br /><strong><em>No one</em></strong>', $t_args);
+          $items[] = $this->t('!permission<br /><strong><em>No one</em></strong>', $t_args);
       }
   }
 
     // Restrictions and a summary of search config permissions
   $form['content_node_search_config']['restrictions'] = array(
       '#type' => 'fieldset',
-      '#title' => t('Restrictions'),
+      '#title' => $this->t('Restrictions'),
       '#collapsible' => TRUE,
       '#collapsed' => TRUE,
       'remove_advanced' => array(
           '#type' => 'checkbox',
-          '#title' => t('Remove advanced search unconditionally'),
-          '#description' => t('This option removes the advanced search form irrespective of any other setting or user permission.'),
+          '#title' => $this->t('Remove advanced search unconditionally'),
+          '#description' => $this->t('This option removes the advanced search form irrespective of any other setting or user permission.'),
           '#default_value' => $settings['restrictions']['remove_advanced'],
       ),
       'admin_bypass' => array(
           '#type' => 'checkbox',
-          '#title' => t('Admin bypass (primary user with id 1)'),
-          '#description' => t('This option bypasses all form configuration settings; i.e. the entire advanced form unaltered.'),
+          '#title' => $this->t('Admin bypass (primary user with id 1)'),
+          '#description' => $this->t('This option bypasses all form configuration settings; i.e. the entire advanced form unaltered.'),
           '#default_value' => $settings['restrictions']['admin_bypass'],
       ),
       'type_restrictions' => array(
           '#type' => 'fieldset',
-          '#title' => t('Content type permission overview', array('%field' => $label)),
+          '#title' => $this->t('Content type permission overview', array('%field' => $label)),
           '#collapsible' => TRUE,
           '#collapsed' => TRUE,
           'permissions' => array(
-              '#markup' => t('This is an overview of what roles can search each content type.') .
+              '#markup' => $this->t('This is an overview of what roles can search each content type.') .
                   \Drupal::service('renderer')->render( array( '#type' => 'item_list', '#items' => $items ) ) )
-                . t('<p><strong><sup>*</sup></strong>Note: These users are allowed to search all content items.</p><p>To update these, edit the %module module <a href="!url">permissions</a>.</p>',
-        array('%module' => t('Search configuration'), '!url' => Url::fromRoute(('admin/people/permissions'), array('fragment' => 'module-search_config')))),
+                . $this->t('<p><strong><sup>*</sup></strong>Note: These users are allowed to search all content items.</p><p>To update these, edit the %module module <a href="!url">permissions</a>.</p>',
+        array('%module' => $this->t('Search configuration'), '!url' => Url::fromRoute(('admin/people/permissions'), array('fragment' => 'module-search_config')))),
       ),
   );
 }
@@ -294,7 +295,6 @@ function _search_config_form_search_admin_settings_alter($form, $form_state) {
  *
  * User friendly display of key|value listings element validation.
  */
-use  \Drupal\Component\Utility\Html;
 use Drupal\Core\Form\FormStateInterface;
 
 /**
@@ -332,14 +332,14 @@ function element_node_search_config_groupings_validate($element, FormStateInterf
                     }
                 }
                 if (count($unknown_types)) {
-                    $errors[] = t('The key contains one or more invalid content types: %types [line: %line]',
+                    $errors[] = $this->t('The key contains one or more invalid content types: %types [line: %line]',
                         array('%types' => implode(', ', $unknown_types), '%line' => $matches[0]));
                 }
                 elseif (count($found_types)) {
                     $values[implode(',', $found_types)] = $value;
                 }
                 else {
-                    $errors[] = t('No types could be found. [line: %line]',
+                    $errors[] = $this->t('No types could be found. [line: %line]',
                         array('%line' => $matches[0]));
                 }
             }
@@ -354,7 +354,7 @@ function element_node_search_config_groupings_validate($element, FormStateInterf
             '#type' => 'item_list',
             '#items' => $empty_pairs,
         );
-        $errors [] = t('Each line must contain a "type|value" pair. Types must contain one or more content type machine codes separated by commas and values must be non-empty strings. This error was seen on the following lines: !list',
+        $errors [] = $this->t('Each line must contain a "type|value" pair. Types must contain one or more content type machine codes separated by commas and values must be non-empty strings. This error was seen on the following lines: !list',
             array('!list' => \Drupal::service('renderer')->render($item_list)));
     }
     if (!empty($errors)) {
@@ -362,7 +362,7 @@ function element_node_search_config_groupings_validate($element, FormStateInterf
             '#type' => 'item_list',
             '#items' => $errors,
         );
-        $form_state->setErrorByName($element, t('The following errors were detected in the group options: !list',
+        $form_state->setErrorByName($element, $this->t('The following errors were detected in the group options: !list',
             array('!list' => \Drupal::service('renderer')->render($item_list))));
     }
     else {
