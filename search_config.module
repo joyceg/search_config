@@ -1,8 +1,10 @@
 <?php
 
+
 /*
  * Helper function for the installation of the module
  */
+use Drupal\Core\StringTranslation;
 use Drupal\Core\Session\AccountInterface;
 function search_config_get_roles_by_permission($permission) {
     foreach (array(AccountInterface::ANONYMOUS_ROLE, AccountInterface::AUTHENTICATED_ROLE) as $rid) {
@@ -79,7 +81,7 @@ function search_config_content_types()  {
  * Helper function to get the settings
  */
 function search_config_string_overrides($key = NULL) {
-  $overrides = \Drupal::config('search_config.stringoverrides')->get();
+  $overrides = \Drupal::config('search_config.stringoverrides');
   $overrides += array(
     'labels' => array(
       'basic' => '',

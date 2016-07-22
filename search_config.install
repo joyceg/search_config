@@ -46,16 +46,16 @@ $schema = [];
  * Implements hook_install()
  */
 use Drupal\Core\Session\AccountInterface;
-use Drupal\Core\Entity;
+use Drupal\user\Entity\Role;
 function search_config_install()  {
 
   module_load_include('module','search_config');
   foreach (array(AccountInterface::ANONYMOUS_ROLE, AccountInterface::AUTHENTICATED_ROLE) as $rid) {
-      $role = \Drupal\user\Entity\Role::load($rid);
+      $role = Role::load($rid);
       $role->grantPermission('search all content');
       }
     }
-
+  
 /**
  * Implements hook_uninstall().
  */

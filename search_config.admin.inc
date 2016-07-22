@@ -6,16 +6,18 @@
  */
 use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Url;
-use  \Drupal\Component\Utility\Html;
+use Drupal\Component\Utility\Html;
+use Drupal\Core\StringTranslation;
 function _search_config_form_search_admin_settings_alter($form, $form_state) {
     $string_overrides = search_config_string_overrides();
     $form['search_config_string_overrides'] = array(
         '#type' => 'fieldset',
         '#theme' => 'search_config_admin_label_form',
-        '#title' => t('Labels and string overrides'),
+        '#title' => $this->t('Labels and string overrides'),
         '#collapsible' => TRUE,
         '#collapsed' => TRUE,
         'labels' => array(),
+        
         'title_display' => array(),
         '#tree' => TRUE,
     );
