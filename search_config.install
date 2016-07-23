@@ -1,16 +1,17 @@
 <?php
 
-/*
- *Implements hook_schema
+/**
+ * @file
+ * Install, update and uninstall functions for the search_config module.
  */
 
+use Drupal\user\RoleInterface;
+
 /**
- * @return mixed
+ * Implements hook_schema().
  */
 function search_config_schema() {
-$schema = [];
-  if (!Drupal::database()->schema()->tableExists('search_config_exclude'))  {
-    $schema['search_config_exclude'] = array(
+  $schema['search_config_exclude'] = array(
     'description' => 'Provides a way to exclude specific entities from the search results. Note that this does not stop the entities from being indexed.',
     'fields' => array(
       'entity_id' => array(
@@ -38,39 +39,13 @@ $schema = [];
     ),
     'primary key' => array('entity_id', 'entity_type'),
   );
-  }
   return $schema;
 }
 
 /*
  * Implements hook_install()
  */
-use Drupal\Core\Session\AccountInterface;
-use Drupal\Core\Entity;
 function search_config_install()  {
-
-  module_load_include('module','search_config');
-  foreach (array(AccountInterface::ANONYMOUS_ROLE, AccountInterface::AUTHENTICATED_ROLE) as $rid) {
-    $rid->grantPermission('search all content');
-      }
-    $settings = search_config_node_settings();
-    \Drupal::service('config.factory')->getEditable('search_config.settings')->save();
-
-      // Remove the old 6.x variables
-      \Drupal::config('search_config.settings')->clear('search_config_disable_or')->save();
-      \Drupal::config('search_config.settings')->clear('search_config_disable_phrase')->save();
-      \Drupal::config('search_config.settings')->clear('search_config_disable_negative')->save();
-      \Drupal::config('search_config.settings')->clear('search_config_disable_category_all')->save();
-      \Drupal::config('search_config.settings')->clear('search_config_disable_category')->save();
-      \Drupal::config('search_config.settings')->clear('search_config_disable_type')->save();
-      \Drupal::config('search_config.settings')->clear('search_config_disable_index_type')->save();
-
-    }
-
-/**
- * Implements hook_uninstall().
- */
-function search_config_uninstall() {
-  \Drupal::service('config.factory')->getEditable('search_config.settings')->delete();
-  \Drupal::service('config.factory')->getEditable('search_config.node_content_settings')->delete();
+  user_role_grant_permissions(RoleInterface::ANONYMOUS_ID, array('search all content'));
+  user_role_grant_permissions(RoleInterface::AUTHENTICATED_ID, array('search all content'));
 }
