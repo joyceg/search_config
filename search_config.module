@@ -1,13 +1,19 @@
 <?php
 
-/*
- * Helper function for the installation of the module
+/**
+ * @file
+ * The module that search form, including enforcing search restrictions by content type.
  */
+
 use Drupal\Core\Session\AccountInterface;
+
 function search_config_get_roles_by_permission($permission) {
-    foreach (array(AccountInterface::ANONYMOUS_ROLE, AccountInterface::AUTHENTICATED_ROLE) as $rid) {
-                return $rid->hasPermission($permission);
-   }
+  foreach (array(
+             AccountInterface::ANONYMOUS_ROLE,
+             AccountInterface::AUTHENTICATED_ROLE
+           ) as $rid) {
+    return $rid->hasPermission($permission);
+  }
 }
 
 /**
@@ -72,7 +78,8 @@ function search_config_node_settings() {
  * Helper function to get an array of safe to use content type names
  */
 use Drupal\Component\Utility;
-function search_config_content_types()  {
+
+function search_config_content_types() {
   return array_map('Drupal\Component\Utility\Html::escape', node_type_get_names());
 }
 
@@ -80,7 +87,8 @@ function search_config_content_types()  {
  * Helper function to get the settings
  */
 function search_config_string_overrides($key = NULL) {
-  $overrides = \Drupal::config('search_config.stringoverrides')->get('search_config_string_overrides');
+  $overrides = \Drupal::config('search_config.stringoverrides')
+    ->get('search_config_string_overrides');
   $overrides += array(
     'labels' => array(
       'basic' => '',
@@ -117,13 +125,13 @@ function search_config_string_overrides($key = NULL) {
 /**
  * Implement hook_theme()
  */
-function search_config_theme()  {
+function search_config_theme() {
   return array(
     'search_config_admin_label_form' => array(
       'render element' => 'form',
       'template' => 'templates/search-config-admin-labels-form.html.twig',
-      ),
-    );
+    ),
+  );
 }
 
 /**
@@ -133,6 +141,7 @@ function search_config_theme()  {
  * search results found.
  */
 use Drupal\node\NodeInterface;
+
 function search_config_node_search_result(NodeInterface $node) {
   global $search_config_node_results;
   $search_config_node_results [$node->id()] = $node->id();
@@ -143,14 +152,15 @@ function search_config_node_search_result(NodeInterface $node) {
  */
 use Drupal\Core\Database\Query\SelectInterface;
 use \Drupal\Core\Database\Query\Condition;
- function search_config_query_node_access_alter(SelectInterface $query) {
+
+function search_config_query_node_access_alter(SelectInterface $query) {
   $user = \Drupal::currentUser();
   if ($user->id() == 1) {
     return;
   }
   $search = FALSE;
   $node = FALSE;
-  foreach ( $query->getTables() as $alias => $table) {
+  foreach ($query->getTables() as $alias => $table) {
     if ($table['table'] == 'search_index') {
       $search = $alias;
     }
@@ -160,32 +170,34 @@ use \Drupal\Core\Database\Query\Condition;
   }
 
   if ($node && $search) {
-      if ($user->id() != 1) {
-          if (!\Drupal::currentUser()->hasPermission('search all content')) {
-              $excluded_content_types = array();
-              foreach (search_config_content_types() as $type => $label) {
-                  if (!\Drupal::currentUser()->hasPermission("search $type content")) {
-                      $excluded_content_types[] = $type;
-                  }
-              }
-
-              // A core bug results in a DB error if we use the following: Ref: #1210072
-              // $query->condition($node . '.type', array($excluded_content_types), 'NOT IN');
-              if (!empty($excluded_content_types)) {
-                  $db_and = new Condition('AND');
-                  foreach ($excluded_content_types as $type) {
-                      $db_and->condition($node . '.type', $type, '!=');
-                  }
-                  $query->condition($db_and);
-              }
+    if ($user->id() != 1) {
+      if (!\Drupal::currentUser()->hasPermission('search all content')) {
+        $excluded_content_types = array();
+        foreach (search_config_content_types() as $type => $label) {
+          if (!\Drupal::currentUser()->hasPermission("search $type content")) {
+            $excluded_content_types[] = $type;
           }
+        }
 
-          if (!\Drupal::currentUser()->hasPermission('search all excluded entities')) {
-              // Join into the {} table to see if it is excluded.
-              $query->leftJoin('search_config_exclude', 'sc', $node . '.nid = sc.entity_id AND sc.entity_type = :type', array(':type' => 'node'));
-              $query->isNull('sc.entity_id');
+        // A core bug results in a DB error if we use the following: Ref: #1210072
+        // $query->condition($node . '.type', array($excluded_content_types), 'NOT IN');
+        if (!empty($excluded_content_types)) {
+          $db_and = new Condition('AND');
+          foreach ($excluded_content_types as $type) {
+            $db_and->condition($node . '.type', $type, '!=');
           }
+          $query->condition($db_and);
+        }
       }
+
+      if (!\Drupal::currentUser()
+        ->hasPermission('search all excluded entities')
+      ) {
+        // Join into the {} table to see if it is excluded.
+        $query->leftJoin('search_config_exclude', 'sc', $node . '.nid = sc.entity_id AND sc.entity_type = :type', array(':type' => 'node'));
+        $query->isNull('sc.entity_id');
+      }
+    }
 
     if (get_class($query) == 'PagerDefault' || is_subclass_of($query, 'PagerDefault')) {
       $settings = search_config_node_settings();
@@ -240,8 +252,13 @@ function search_config_form_search_admin_settings_alter(&$form, $form_state) {
  * Additional submit handler to save the additional fields added by the form alter.
  */
 function search_config_search_admin_settings_alter(&$form, &$form_state) {
-  \Drupal::configFactory()->getEditable('search_config.settings')->set('search_config_string_overrides', $form_state['values']['search_config_string_overrides'])->save();
-  \Drupal::configFactory()->getEditable('search_config.node_content_settings')->set('search_config', $form_state['values']['content_node_search_config']);
+  \Drupal::configFactory()
+    ->getEditable('search_config.settings')
+    ->set('search_config_string_overrides', $form_state['values']['search_config_string_overrides'])
+    ->save();
+  \Drupal::configFactory()
+    ->getEditable('search_config.node_content_settings')
+    ->set('search_config', $form_state['values']['content_node_search_config']);
 }
 
 /*
@@ -250,58 +267,68 @@ function search_config_search_admin_settings_alter(&$form, &$form_state) {
 /**
  * @param $form
  * @param $form_state
- */function search_config_form_node_form_alter(&$form, $form_state) {
-    if (!\Drupal::currentUser()->hasPermission('admin node search exlusions')) {
-        return;
-    }
+ */
+function search_config_form_node_form_alter(&$form, $form_state) {
+  if (!\Drupal::currentUser()->hasPermission('admin node search exlusions')) {
+    return;
+  }
 
-    $node = $form['#node'];
-    $default_value = 0;
-    $db = \Drupal::database();
-    $query = 'SELECT 1 FROM {search_config_exclude} WHERE entity_id = :id AND entity_type = :type';
-    if (!empty($node->nid)) {
-        $default_value = (int) $db->queryRange($query, 0, 1, array(':id' => $node->nid, ':type' => 'node'))->fetchField();
-    }
-    $element = array(
-        '#type' => 'checkbox',
-        '#title' => t('Exclude from search'),
-        '#default_value' => $default_value,
-    );
+  $node = $form['#node'];
+  $default_value = 0;
+  $db = \Drupal::database();
+  $query = 'SELECT 1 FROM {search_config_exclude} WHERE entity_id = :id AND entity_type = :type';
+  if (!empty($node->nid)) {
+    $default_value = (int) $db->queryRange($query, 0, 1, array(
+      ':id' => $node->nid,
+      ':type' => 'node'
+    ))->fetchField();
+  }
+  $element = array(
+    '#type' => 'checkbox',
+    '#title' => t('Exclude from search'),
+    '#default_value' => $default_value,
+  );
 
-    // Align with normal publishing options if possible.
-    if (\Drupal::currentUser()->hasPermission('administer nodes')) {
-        $form['options']['search_config_exclude'] = $element;
+  // Align with normal publishing options if possible.
+  if (\Drupal::currentUser()->hasPermission('administer nodes')) {
+    $form['options']['search_config_exclude'] = $element;
+  }
+  else {
+    $form['search_config_exclude'] = $element;
+    // Pushes the element to sit just above the vertical tabs.
+    if (!empty($form['additional_settings']['#weight'])) {
+      $form['search_config_exclude']['#weight'] = $form['additional_settings']['#weight'] - 1;
     }
-    else {
-        $form['search_config_exclude'] = $element;
-        // Pushes the element to sit just above the vertical tabs.
-        if (!empty($form['additional_settings']['#weight'])) {
-            $form['search_config_exclude']['#weight'] = $form['additional_settings']['#weight'] - 1;
-        }
-    }
+  }
 }
 
 /**
  * Implements hook_node_insert().
  */
 function search_config_node_insert(\Drupal\node\NodeInterface $node) {
-    if (!empty($node->search_config_exclude)) {
-        $record = array(
-            'entity_type' => 'node',
-            'entity_id' => $node->id(),
-            'exclude' => 1,
-        );
-        \Drupal::database()->insert('search_config_exclude')->fields($record)->execute();
-    }
+  if (!empty($node->search_config_exclude)) {
+    $record = array(
+      'entity_type' => 'node',
+      'entity_id' => $node->id(),
+      'exclude' => 1,
+    );
+    \Drupal::database()
+      ->insert('search_config_exclude')
+      ->fields($record)
+      ->execute();
+  }
 }
 
 /*
  * Implements hook_node_update()
  */
 function search_config_node_update(\Drupal\node\NodeInterface $node) {
-    if (isset($node->search_config_exclude)) {
-        $db = \Drupal::database();
-        $db->delete('search_config_exclude')->condition('entity_id', $node->id())->condition('entity_type', 'node')->execute();
-        search_config_node_insert($node);
-    }
+  if (isset($node->search_config_exclude)) {
+    $db = \Drupal::database();
+    $db->delete('search_config_exclude')
+      ->condition('entity_id', $node->id())
+      ->condition('entity_type', 'node')
+      ->execute();
+    search_config_node_insert($node);
+  }
 }

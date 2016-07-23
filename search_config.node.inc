@@ -141,7 +141,8 @@ function _search_config_advanced_form(&$form, $form_state) {
     case 'empty':
       // Check the 3 fields and also if we are going to move the basic form here.
       if (!($fkeywords['phrase']['#access'] || $fkeywords['or']['#access'] || $fkeywords['negative']['#access']
-          || $settings['forms']['move_keyword_search'])) {
+        || $settings['forms']['move_keyword_search'])
+      ) {
         $fkeywords['#access'] = FALSE;
       }
       break;
@@ -232,11 +233,13 @@ function _search_config_advanced_form(&$form, $form_state) {
     $access = \Drupal::currentUser()->hasPermission('search all content');
     $allowed_types = array();
     foreach (search_config_content_types() as $key => $type) {
-      if (in_array($key, $base_types) || !($access || \Drupal::currentUser()->hasPermission("search $key content"))) {
+      if (in_array($key, $base_types) || !($access || \Drupal::currentUser()
+            ->hasPermission("search $key content"))
+      ) {
         unset($ftype['#options'][$key]);
       }
       else {
-        $allowed_types [$key]= $key;
+        $allowed_types [$key] = $key;
       }
     }
     if (!empty($fs_types['groupings'])) {
@@ -305,6 +308,7 @@ function _search_config_advanced_form(&$form, $form_state) {
  * @param $form_state
  */
 use Drupal\Core\Form\FormStateInterface;
+
 function search_config_type_element_validate($element, FormStateInterface &$form_state) {
   $types = array();
   foreach ($element['#value'] as $opt_types) {
@@ -312,7 +316,7 @@ function search_config_type_element_validate($element, FormStateInterface &$form
       $types[$type] = $type;
     }
   }
-    $form_state->setValueForElement($element, $types);  
+  $form_state->setValueForElement($element, $types);
 }
 
 /**
