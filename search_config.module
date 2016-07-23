@@ -6,6 +6,10 @@
  */
 
 use Drupal\Core\Session\AccountInterface;
+use Drupal\Component\Utility;
+use Drupal\node\NodeInterface;
+use Drupal\Core\Database\Query\SelectInterface;
+use \Drupal\Core\Database\Query\Condition;
 
 function search_config_get_roles_by_permission($permission) {
   foreach (array(
@@ -77,8 +81,6 @@ function search_config_node_settings() {
 /**
  * Helper function to get an array of safe to use content type names
  */
-use Drupal\Component\Utility;
-
 function search_config_content_types() {
   return array_map('Drupal\Component\Utility\Html::escape', node_type_get_names());
 }
@@ -140,8 +142,6 @@ function search_config_theme() {
  * The only reason for this hook is to record if there are any active
  * search results found.
  */
-use Drupal\node\NodeInterface;
-
 function search_config_node_search_result(NodeInterface $node) {
   global $search_config_node_results;
   $search_config_node_results [$node->id()] = $node->id();
@@ -150,9 +150,6 @@ function search_config_node_search_result(NodeInterface $node) {
 /**
  * Implements of hook_query_node_access_alter().
  */
-use Drupal\Core\Database\Query\SelectInterface;
-use \Drupal\Core\Database\Query\Condition;
-
 function search_config_query_node_access_alter(SelectInterface $query) {
   $user = \Drupal::currentUser();
   if ($user->id() == 1) {
@@ -264,10 +261,6 @@ function search_config_search_admin_settings_alter(&$form, &$form_state) {
 /*
  * Implements hook_form_BASE_FORM_ID_alter().
  */
-/**
- * @param $form
- * @param $form_state
- */
 function search_config_form_node_form_alter(&$form, $form_state) {
   if (!\Drupal::currentUser()->hasPermission('admin node search exlusions')) {
     return;
@@ -320,7 +313,7 @@ function search_config_node_insert(\Drupal\node\NodeInterface $node) {
 }
 
 /*
- * Implements hook_node_update()
+ * Implements hook_node_update().
  */
 function search_config_node_update(\Drupal\node\NodeInterface $node) {
   if (isset($node->search_config_exclude)) {

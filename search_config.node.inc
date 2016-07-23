@@ -1,5 +1,7 @@
 <?php
 
+use Drupal\Core\Form\FormStateInterface;
+
 /**
  * Does the string overrides unconditional on what other changes are pending for
  * the form.
@@ -307,8 +309,6 @@ function _search_config_advanced_form(&$form, $form_state) {
  * @param $element
  * @param $form_state
  */
-use Drupal\Core\Form\FormStateInterface;
-
 function search_config_type_element_validate($element, FormStateInterface &$form_state) {
   $types = array();
   foreach ($element['#value'] as $opt_types) {

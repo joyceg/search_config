@@ -1,12 +1,16 @@
 <?php
 
+use Drupal\Core\Session\AccountInterface;
+use Drupal\Core\Url;
+use  \Drupal\Component\Utility\Html;
+use Drupal\Core\Form\FormStateInterface;
+
 /**
+ * Helper function to alter the search administration form.
+ *
  * @param $form
  * @param $form_state
  */
-use Drupal\Core\Session\AccountInterface;
-use Drupal\Core\Url;
-
 function _search_config_form_search_admin_settings_alter($form, $form_state) {
   $string_overrides = search_config_string_overrides();
   $form['search_config_string_overrides'] = array(
@@ -251,7 +255,7 @@ function _search_config_form_search_admin_settings_alter($form, $form_state) {
   }
   $items = array();
   $all_permissions = array(
-    AccountInterface::ANONYMOUS_ROLE => $roles[\Drupal\Core\Session\AccountInterface::ANONYMOUS_ROLE],
+    AccountInterface::ANONYMOUS_ROLE => $roles[AccountInterface::ANONYMOUS_ROLE],
     AccountInterface::AUTHENTICATED_ROLE => $roles[AccountInterface::AUTHENTICATED_ROLE],
   );
   $search_all = array();
@@ -332,11 +336,7 @@ function _search_config_form_search_admin_settings_alter($form, $form_state) {
  * Element validate callback for groupings list.
  *
  * User friendly display of key|value listings element validation.
- */
-use  \Drupal\Component\Utility\Html;
-use Drupal\Core\Form\FormStateInterface;
-
-/**
+ *
  * @param $element
  * @param FormStateInterface $form_state
  */
