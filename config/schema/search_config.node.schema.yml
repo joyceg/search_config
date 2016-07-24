@@ -1,6 +1,6 @@
 search_config.node:
-    type: config_object
-        mapping:
-          search_config:
-            type: bool
-            label: Additional Node Search ConfigurationAdditional Node Search Configuration
+  type: config_object
+  mapping:
+    search_config:
+      type: bool
+      label: Additional Node Search ConfigurationAdditional Node Search Configuration
