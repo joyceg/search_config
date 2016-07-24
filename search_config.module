@@ -6,6 +6,7 @@
  */
 use Drupal\Core\StringTranslation;
 use Drupal\Core\Session\AccountInterface;
+use Drupal\search_config\buildForm\searchForm;
 function search_config_get_roles_by_permission($permission) {
     foreach (array(AccountInterface::ANONYMOUS_ROLE, AccountInterface::AUTHENTICATED_ROLE) as $rid) {
                 return $rid->hasPermission($permission);
@@ -232,9 +233,11 @@ function search_config_get_access($remove, $grant) {
  * Implements hook_form_FORM_alter()
  */
 function search_config_form_search_admin_settings_alter(&$form, $form_state) {
-  module_load_include('inc', 'search_config', 'search_config.admin');
-  _search_config_form_search_admin_settings_alter($form, $form_state);
-  $form['#submit'][] = 'search_config_search_admin_settings_alter';
+
+    $searchForm= new searchForm();
+    $searchForm->buildForm($form, $form_state);
+    $searchForm->validateForm($form,$form_state);
+    $searchForm->submitForm($form,$form_state);
 }
 
 /**
