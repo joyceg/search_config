@@ -1,6 +1,6 @@
 search_config.stringoverrdies:
   type: config_object
-    mapping:
-      search_config_string_overrides:
-        type: array
-        label: 'search_config_string_overrides'
+  mapping:
+    search_config_string_overrides:
+      type: array
+      label: 'search_config_string_overrides'

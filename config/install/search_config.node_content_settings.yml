@@ -1,4 +1,4 @@
-move_keyword_search: 0
-advanced_populate: 0
+move_keyword_search: false
+advanced_populate: false
 remove_containing_wrapper: 'No change'
-advanced_exapand: 'Always collapsed (no modification)'
+advanced_expand: 'Always collapsed (no modification)'
