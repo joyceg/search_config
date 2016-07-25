@@ -2,5 +2,10 @@ search_config.node:
   type: config_object
   mapping:
     search_config:
+<<<<<<< HEAD
       type: boolean
       label: 'Additional Node Search ConfigurationAdditional Node Search Configuration'
+=======
+      type: bool
+      label: Additional Node Search ConfigurationAdditional Node Search Configuration
+>>>>>>> 333569d091154f318576db2dc4dc71651cc93e10

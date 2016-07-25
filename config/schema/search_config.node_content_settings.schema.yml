@@ -1,5 +1,6 @@
 search_config.node_content_settings:
   type: config_object
+<<<<<<< HEAD
   mapping:
     move_keyword_search:
       type: boolean
@@ -13,3 +14,18 @@ search_config.node_content_settings:
     advanced_expand:
       type: string
       label: 'Control how the advanced form initially renders'
+=======
+    mapping:
+      move_keyword_search:
+        type: checkbox
+        label: Move basic keyword search
+      advanced_populate:
+        type: checkbox
+        label: Populate the advanced form with default values
+      remove_containing_wrapper:
+        type: radios
+        label: Removing all Containing ... keywords
+      advanced_expand:
+        type: radios
+        label: Control how the advanced form initially renders
+>>>>>>> 333569d091154f318576db2dc4dc71651cc93e10
