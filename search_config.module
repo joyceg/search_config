@@ -13,15 +13,14 @@ use Drupal\Core\Url;
 use Drupal\Component\Utility\Html;
 
 /**
- * Implement hook_theme()
+ * Implements hook_theme().
  */
 function search_config_theme() {
-  return array(
-    'search_config_admin_label_form' => array(
+  return [
+    'search_config_admin_label_form' => [
       'render element' => 'form',
-      'template' => 'templates/search-config-admin-labels-form.html.twig',
-    ),
-  );
+    ],
+  ];
 }
 
 /**
