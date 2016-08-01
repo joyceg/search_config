@@ -187,7 +187,6 @@ function search_config_form_search_admin_settings_alter(&$form, $form_state) {
     }
   }
   $settings = search_config_node_settings();
-  $role_options = array_map('Html::escape', user_roles());
   $form['content_node_search_config'] = array(
     '#type' => 'fieldset',
     '#tree' => TRUE,
@@ -271,7 +270,7 @@ function search_config_form_search_admin_settings_alter(&$form, $form_state) {
       'roles' => array(
         '#type' => 'checkboxes',
         '#title' => t('Override the above option by selecting one or more roles that should see this field:'),
-        '#options' => $role_options,
+        '#options' => array_map('Html::escape', user_role_names()),
         '#default_value' => $settings['fields'][$key]['roles'],
       ),
     );
