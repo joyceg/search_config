@@ -13,15 +13,14 @@ use Drupal\Core\Url;
 use Drupal\Component\Utility\Html;
 
 /**
- * Implement hook_theme()
+ * Implements hook_theme().
  */
 function search_config_theme() {
-  return array(
-    'search_config_admin_label_form' => array(
+  return [
+    'search_config_admin_label_form' => [
       'render element' => 'form',
-      'template' => 'templates/search-config-admin-labels-form.html.twig',
-    ),
-  );
+    ],
+  ];
 }
 
 /**
@@ -167,7 +166,6 @@ function search_config_form_search_admin_settings_alter(&$form, $form_state) {
       $skey => array(
         '#type' => 'textfield',
         '#title' => $slabel[0],
-        '#title_display' => 'invisible',
         '#default_value' => $string_overrides['labels'][$skey],
         '#description' => t('t() string: !translation',
           array(
@@ -182,7 +180,6 @@ function search_config_form_search_admin_settings_alter(&$form, $form_state) {
         $skey => array(
           '#type' => 'radios',
           '#title' => $slabel[0],
-          '#title_display' => 'invisible',
           '#default_value' => $string_overrides['title_display'][$skey],
           '#options' => $title_display_options,
         ),
