@@ -11,13 +11,14 @@ use Drupal\Core\Database\Query\SelectInterface;
 use Drupal\Core\Database\Query\Condition;
 use Drupal\Core\Url;
 use Drupal\Component\Utility\Html;
+use Drupal\Core\Form\FormStateInterface;
 
 /**
  * Implements hook_theme().
  */
 function search_config_theme() {
   return [
-    'search_config_admin_label_form' => [
+    'search-config-admin-label-form' => [
       'render element' => 'form',
     ],
   ];
