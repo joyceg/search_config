@@ -18,7 +18,7 @@ use Drupal\Core\Form\FormStateInterface;
  */
 function search_config_theme() {
   return [
-    'search_config_admin_label_form' => [
+    'search-config-admin-label-form' => [
       'render element' => 'form',
     ],
   ];
