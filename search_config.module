@@ -271,7 +271,7 @@ function search_config_form_search_admin_settings_alter(&$form, $form_state) {
       'roles' => array(
         '#type' => 'checkboxes',
         '#title' => t('Override the above option by selecting one or more roles that should see this field:'),
-        '#options' => array_map('Html::escape', user_role_names()),
+        '#options' => array_map('Drupal\Component\Utility\Html::escape', user_role_names()),
         '#default_value' => $settings['fields'][$key]['roles'],
       ),
     );
