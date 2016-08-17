@@ -52,6 +52,49 @@ groups'.
 You could also configure the maximum number of results to be displayed in a page. You can select the value of your
 choice from the drop down menu of 'Pager limit' in the results section.
 
+Functions used in the module:
+
+* function search_config_form_search_admin_settings_alter(&$form, $form_state)
+    This is the main function for the creation of the forms in search configuration string overrides and the additional
+    node search configuration. This gives the characteristic features of the forms required, the default value to be
+    added and also makes use of the permissions assigned to various roles. The 'search_config_string_overrides'
+    generates the string overrides form and 'content_node_search_config' deals with the additional node search
+    configuration.
+
+* function search_config_search_admin_settings_submit(&$form, &$form_state)
+   This function comes into action on submission of the configuration forms. It saves the contents of the form using the
+   Drupal configuration service. It also access the search_config.node_content_settings configuration file to edit the
+   details as per the user entry.
+
+* function element_node_search_config_groupings_validate($element, FormStateInterface &$form_state)
+   This function validates the data entered by the user in the search configuration forms. It makes use of the regular
+   expressions. Furthermore, it sets errors if any unusual behaviour is reported.
+
+* function search_config_node_settings() and function search_config_string_overrides($key = NULL)
+   This function is for loading the default settings. Ensuring the default values are added to the form attributes. It
+   makes use of the Drupal configuration API.
+
+* function search_config_content_types()
+   This function returns an array of the names of the node types available.
+   return array_map('Drupal\Component\Utility\Html::escape', node_type_get_names());
+
+* function search_config_get_roles_by_permission($permission)
+   This helper function returns roles with the given permission.
+     foreach (array(
+                  AccountInterface::ANONYMOUS_ROLE,
+                  AccountInterface::AUTHENTICATED_ROLE
+                ) as $rid) {
+         return $rid->hasPermission($permission);
+       }
+
+* function search_config_get_access($remove, $grant)
+   This helper function is to test the users whether they have been configured the right access to the fields.
+     $user = \Drupal::currentUser();
+       if ($remove) {
+         return (bool) array_intersect_key($user->getRoles(), array_filter($grant));
+       }
+       return TRUE;
+
 MAINTAINERS
 ===========
 Karthik Kumar D K  <https://www.drupal.org/u/heykarthikwithu>
