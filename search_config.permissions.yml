@@ -1,4 +1,4 @@
-admin node search exlusions:
+admin node search exclusions:
   title: 'Exlude nodes from search results'
   description: 'This allows users with this permission to flag content as not to be searched.'
   restrict access: TRUE
