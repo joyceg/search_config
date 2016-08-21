@@ -119,11 +119,10 @@ function search_config_form_search_form_alter(&$form, $form_state) {
 function search_config_form_search_admin_settings_alter(&$form, $form_state) {
   $string_overrides = search_config_string_overrides();
   $form['search_config_string_overrides'] = array(
-    '#type' => 'fieldset',
+    '#type' => 'details',
     '#theme' => 'search_config_admin_label_form',
     '#title' => t('Labels and string overrides'),
-    '#collapsible' => TRUE,
-    '#collapsed' => TRUE,
+    '#open' => \Drupal::config('search_config.node')->get('search_config'),
     'labels' => array(),
     'title_display' => array(),
     '#tree' => TRUE,
@@ -189,11 +188,10 @@ function search_config_form_search_admin_settings_alter(&$form, $form_state) {
   }
   $settings = search_config_node_settings();
   $form['content_node_search_config'] = array(
-    '#type' => 'fieldset',
+    '#type' => 'details',
     '#tree' => TRUE,
     '#title' => t('Additional Node Search Configuration'),
-    '#collapsed' => \Drupal::config('search_config.node')->get('search_config'),
-    '#collapsible' => TRUE,
+    '#open' => \Drupal::config('search_config.node')->get('search_config'),
     'info' => array(
       '#markup' => t('<p>The basic search form is the keyword and search button that is shown to all users. The additional fields are all part of the advanced search form that is only shown to users that have the "%advsearch" permission. <em>This module does not override these permissions!</em></p>',
         [
@@ -259,10 +257,9 @@ function search_config_form_search_admin_settings_alter(&$form, $form_state) {
   );
   foreach ($fields as $key => $label) {
     $form['content_node_search_config']['fields'][$key] = array(
-      '#type' => 'fieldset',
+      '#type' => 'details',
       '#title' => t('%field settings', array('%field' => $label)),
-      '#collapsible' => TRUE,
-      '#collapsed' => TRUE,
+      '#open' => \Drupal::config('search_config.node')->get('search_config'),
       'remove' => array(
         '#type' => 'checkbox',
         '#title' => t('Hide this field', array('%field' => $label)),
@@ -330,10 +327,9 @@ function search_config_form_search_admin_settings_alter(&$form, $form_state) {
 
   // Restrictions and a summary of search config permissions
   $form['content_node_search_config']['results'] = array(
-    '#type' => 'fieldset',
+    '#type' => 'details',
     '#title' => t('Results'),
-    '#collapsible' => TRUE,
-    '#collapsed' => TRUE,
+    '#open' => \Drupal::config('search_config.node')->get('search_config'),
     'limit' => array(
       '#type' => 'select',
       '#title' => t('Pager limit'),
@@ -398,10 +394,9 @@ function search_config_form_search_admin_settings_alter(&$form, $form_state) {
 
   // Restrictions and a summary of search config permissions
   $form['content_node_search_config']['restrictions'] = array(
-    '#type' => 'fieldset',
+    '#type' => 'details',
     '#title' => t('Restrictions'),
-    '#collapsible' => TRUE,
-    '#collapsed' => TRUE,
+    '#open' => \Drupal::config('search_config.node')->get('search_config'),
     'remove_advanced' => array(
       '#type' => 'checkbox',
       '#title' => t('Remove advanced search unconditionally'),
@@ -415,10 +410,9 @@ function search_config_form_search_admin_settings_alter(&$form, $form_state) {
       '#default_value' => $settings['restrictions']['admin_bypass'],
     ),
     'type_restrictions' => array(
-      '#type' => 'fieldset',
+      '#type' => 'details',
       '#title' => t('Content type permission overview', array('%field' => $label)),
-      '#collapsible' => TRUE,
-      '#collapsed' => TRUE,
+      '#open' => \Drupal::config('search_config.node')->get('search_config'),
 //      'permissions' => array(
 //          '#markup' => t('This is an overview of what roles can search each content type.') .
 //            \Drupal::service('renderer')->render(array(
