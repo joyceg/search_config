@@ -306,8 +306,8 @@ function search_config_form_search_admin_settings_alter(&$form, $form_state) {
         'filter' => array(
           '#type' => 'checkboxes',
           '#title' => t('Hide the following content types from the %field filter:', array('%field' => $label)),
-          '#description' => t('<strong>This only limits the filter options</strong>. You must set the <a href="!url">permissions here</a> to enforce search restrictions per content types. These permissions are also used to filter the options shown to the user.',
-          array('!url' => Url::fromRoute('user.admin_permissions')->toString())),
+          '#description' => t('<strong>This only limits the filter options</strong>. You must set the <a href=":url">permissions here</a> to enforce search restrictions per content types. These permissions are also used to filter the options shown to the user.',
+          array(':url' => Url::fromRoute('user.admin_permissions')->toString())),
           '#options' => search_config_content_types(),
           '#default_value' => $settings['fields'][$key]['filter'],
         ),
@@ -391,7 +391,7 @@ function search_config_form_search_admin_settings_alter(&$form, $form_state) {
       $items[] = t('!permission<br /><strong><em>No one</em></strong>', $t_args);
     }
   }
-
+$itemList = array( '#type' => 'item_list', '#items' => $items);
   // Restrictions and a summary of search config permissions
   $form['content_node_search_config']['restrictions'] = array(
     '#type' => 'details',
@@ -412,19 +412,16 @@ function search_config_form_search_admin_settings_alter(&$form, $form_state) {
     'type_restrictions' => array(
       '#type' => 'details',
       '#title' => t('Content type permission overview', array('%field' => $label)),
+      'permissions' => array(
+          '#markup' => t('This is an overview of what roles can search each content type.') .
+            \Drupal::service('renderer')->render($itemList)
+        )
+        . t('<p><strong><sup>*</sup></strong>Note: These users are allowed to search all content items.</p><p>To update these, edit the %module module <a href=":url">permissions</a>.</p>',
+          array(
+            '%module' => t('Search configuration'),
+            ':url' => Url::fromRoute('user.admin_permissions')->toString()
+          )),
       '#open' => \Drupal::config('search_config.node')->get('search_config'),
-//      'permissions' => array(
-//          '#markup' => t('This is an overview of what roles can search each content type.') .
-//            \Drupal::service('renderer')->render(array(
-//              '#type' => 'item_list',
-//              '#items' => $items
-//            ))
-//        )
-//        . t('<p><strong><sup>*</sup></strong>Note: These users are allowed to search all content items.</p><p>To update these, edit the %module module <a href="!url">permissions</a>.</p>',
-//          array(
-//            '%module' => t('Search configuration'),
-//            '!url' => Url::fromRoute('user.admin_permissions')->toString()
-//          )),
     ),
   );
   $form['#submit'][] = 'search_config_search_admin_settings_submit';
