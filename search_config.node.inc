@@ -13,15 +13,15 @@ function _search_config_set_string_overrides(&$form, $form_state) {
 
   // The two submit buttons.
   if (isset($form['basic']['submit']) && !empty($labels['basic_submit'])) {
-    $form['basic']['submit']['#value'] = t('!search_config:basic_submit', array('!search_config:basic_submit' => $labels['basic_submit']));
+    $form['basic']['submit']['#value'] = t('!search_config:basic_submit', ['!search_config:basic_submit' => $labels['basic_submit']]);
   }
   if (isset($form['advanced']['submit']) && !empty($labels['advanced_submit'])) {
-    $form['advanced']['submit']['#value'] = t('!search_config:advanced_submit', array('!search_config:advanced_submit' => $labels['advanced_submit']));
+    $form['advanced']['submit']['#value'] = t('!search_config:advanced_submit', ['!search_config:advanced_submit' => $labels['advanced_submit']]);
   }
 
   // Other form elements. Map into an array to iterate over each element.
   $title_display = search_config_string_overrides('title_display');
-  $label_elements = array();
+  $label_elements = [];
   if (isset($form['basic'])) {
     $label_elements['basic'] = &$form['basic']['keys'];
   }
@@ -44,10 +44,10 @@ function _search_config_set_string_overrides(&$form, $form_state) {
       continue;
     }
     if (!empty($fkeys['#default_value']) && !empty($labels[$key . '_with_keys'])) {
-      $label_elements[$key]['#title'] = t('!search_config:' . $key, array('!search_config:' . $key => $labels[$key . '_with_keys']));
+      $label_elements[$key]['#title'] = t('!search_config:' . $key, ['!search_config:' . $key => $labels[$key . '_with_keys']]);
     }
     elseif (!empty($labels[$key])) {
-      $label_elements[$key]['#title'] = t('!search_config:' . $key, array('!search_config:' . $key => $labels[$key]));
+      $label_elements[$key]['#title'] = t('!search_config:' . $key, ['!search_config:' . $key => $labels[$key]]);
     }
     if (!empty($title_display[$key])) {
       switch ($title_display[$key]) {
@@ -156,7 +156,7 @@ function _search_config_advanced_form(&$form, $form_state) {
 
   // Set the advanced forms values, (as best we can).
   if ($settings['forms']['advanced_populate']) {
-    $basic_values = array();
+    $basic_values = [];
     $values = _parse_search_expression($fkeys['#default_value']);
     $sections = _parse_search_expression($fkeys['#default_value']);
 
@@ -216,7 +216,7 @@ function _search_config_advanced_form(&$form, $form_state) {
     }
 
     // @todo: figure out how these work: 'language' & 'term'
-    foreach (array('language', 'term', 'type') as $key) {
+    foreach (['language', 'term', 'type'] as $key) {
       if (isset($sections['options'][$key])) {
         $basic_values[] = $key . ':' . $sections['options'][$key];
       }
@@ -233,7 +233,7 @@ function _search_config_advanced_form(&$form, $form_state) {
     // Remove these ones from the display.
     $base_types = array_filter($fs_types['filter']);
     $access = \Drupal::currentUser()->hasPermission('search all content');
-    $allowed_types = array();
+    $allowed_types = [];
     foreach (search_config_content_types() as $key => $type) {
       if (in_array($key, $base_types) || !($access || \Drupal::currentUser()
             ->hasPermission("search $key content"))
@@ -246,9 +246,9 @@ function _search_config_advanced_form(&$form, $form_state) {
     }
     if (!empty($fs_types['groupings'])) {
       // Parse the groupings for used types.
-      $selected_types = empty($ftype['#default_value']) ? array() : $ftype['#default_value'];
-      $grouping_selected_types = array();
-      $used_types = array();
+      $selected_types = empty($ftype['#default_value']) ? [] : $ftype['#default_value'];
+      $grouping_selected_types = [];
+      $used_types = [];
       foreach ($fs_types['groupings'] as $gtypes => $glabel) {
         foreach (explode(',', $gtypes) as $gtype) {
           if (isset($allowed_types[$gtype])) {
@@ -257,9 +257,9 @@ function _search_config_advanced_form(&$form, $form_state) {
         }
       }
       // And again to set the values
-      $filtered_groupings = array();
+      $filtered_groupings = [];
       foreach ($fs_types['groupings'] as $gtypes => $glabel) {
-        $filtered_gtypes = array();
+        $filtered_gtypes = [];
         foreach (explode(',', $gtypes) as $gtype) {
           if (isset($allowed_types[$gtype])) {
             $filtered_gtypes [$gtype] = $gtype;
@@ -286,9 +286,9 @@ function _search_config_advanced_form(&$form, $form_state) {
       $ftype['#options'] = $filtered_groupings;
       $ftype['#default_value'] = $grouping_selected_types;
       if (empty($ftype['#element_validate'])) {
-        $ftype['#element_validate'] = array();
+        $ftype['#element_validate'] = [];
       }
-      $ftype['#element_validate'] = array('search_config_type_element_validate') + $ftype['#element_validate'];
+      $ftype['#element_validate'] = ['search_config_type_element_validate'] + $ftype['#element_validate'];
     }
   }
 
@@ -297,7 +297,7 @@ function _search_config_advanced_form(&$form, $form_state) {
   // This moves the keywords search element into the advanced form.
   if ($settings['forms']['move_keyword_search']) {
     $fkeys['#size'] = $fkeywords['or']['#size'];
-    $fkeywords = array('keys' => $fkeys) + $fkeywords;
+    $fkeywords = ['keys' => $fkeys] + $fkeywords;
     unset($form['basic']['keys']);
     $form['basic']['#access'] = FALSE;
   }
@@ -310,7 +310,7 @@ function _search_config_advanced_form(&$form, $form_state) {
  * @param $form_state
  */
 function search_config_type_element_validate($element, FormStateInterface &$form_state) {
-  $types = array();
+  $types = [];
   foreach ($element['#value'] as $opt_types) {
     foreach (explode(',', $opt_types) as $type) {
       $types[$type] = $type;
@@ -323,14 +323,14 @@ function search_config_type_element_validate($element, FormStateInterface &$form
  * Cloned from the search module to parse the query string.
  */
 function _parse_search_expression($expression) {
-  $sections = array(
-    'negative' => array(),
-    'positive' => array(),
-    'options' => array()
-  );
+  $sections = [
+    'negative' => [],
+    'positive' => [],
+    'options' => [],
+  ];
 
   // Pull out known option selectors
-  foreach (array('type', 'language', 'term') as $option) {
+  foreach (['type', 'language', 'term'] as $option) {
     if (preg_match('/(^| )' . $option . ':([^ ]*)( |$)/i', $expression, $matches)) {
       $sections['options'][$option] = $matches[2];
       $expression = str_replace($matches[0], ' ', $expression);
@@ -357,7 +357,7 @@ function _parse_search_expression($expression) {
       $words = search_simplify($match[2]);
       // Re-explode in case simplification added more words, except when
       // matching a phrase.
-      $words = $phrase ? array($words) : preg_split('/ /', $words, -1, PREG_SPLIT_NO_EMPTY);
+      $words = $phrase ? [$words] : preg_split('/ /', $words, -1, PREG_SPLIT_NO_EMPTY);
       // Negative matches.
       if ($match[1] == '-') {
         $sections['negative'] = array_merge($sections['negative'], $words);
@@ -368,7 +368,7 @@ function _parse_search_expression($expression) {
         $last = array_pop($sections['positive']);
         // Starting a new OR?
         if (!is_array($last)) {
-          $last = array($last);
+          $last = [$last];
         }
         $sections['positive'][] = $last;
         $or = TRUE;

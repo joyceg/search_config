@@ -17,16 +17,16 @@ class searchConfigPermissions {
    *
    * @return array
    *   The search config permissions.
-   *   @see \Drupal\user\PermissionHandlerInterface::getPermissions()
+   * @see \Drupal\user\PermissionHandlerInterface::getPermissions()
    */
   public function searchConfigPermissions() {
-    $perms = array();
+    $perms = [];
     // Generate search config permissions for all node types.
     foreach (NodeType::loadMultiple() as $type) {
       $type_id = $type->id();
-      $perms["search $type_id content"] = array(
-        'title' => $this->t('%type_name: Search content of this type', array('%type_name' => $type->label())),
-      );
+      $perms["search $type_id content"] = [
+        'title' => $this->t('%type_name: Search content of this type', ['%type_name' => $type->label()]),
+      ];
     }
 
     return $perms;
